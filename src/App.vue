@@ -8,7 +8,7 @@ import CommonApi from '@/api/CommonApi';
 
 export default defineComponent({
   async setup() {
-    const res = await CommonApi.checkHealth();
+    const res = await CommonApi.retrieveStudents();
     console.log(res);
   },
   emits: [],
