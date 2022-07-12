@@ -8,6 +8,9 @@ export default class CommonApi {
   }
 
   public static retrieveStudents(request: BasePaginationRequest): Promise<RetrieveStudentsPaginationResponse> {
-    return axios.get(`/api/v1/students/${request.page}/${request.size}`, { params: request }).then(res => res.data);
+    console.log(`/api/v1/students/${request.page}/${request.size}`);
+    return axios
+    .get(`/api/v1/students/${request.page}/${request.size}`, { params: request })
+    .then(res => res.data);
   }
 }
