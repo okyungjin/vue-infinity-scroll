@@ -13,30 +13,45 @@ const baseResponse: BaseResponse = {
   responseLanguage: 'ko',
 };
 
-const students = [...Array(10).keys()].map(i => {
-  const index = i + 1;
-  const student: Student = {
-    studyentKey: index,
-    studyentId: CommonUtils.generateRandomId(),
-    name: `student${index}`,
-    address: `address-${index}`,
-    description: `description-${index}`,
-    createdDate: '2022-07-11',
-    birthDate: '1996-01-03',
-    age: 27,
-    gender: {
-      value: 'FEMALE',
-      label: '여성',
-    },
-    sequenceNo: index,
-  };
-  return student;
-});
+const students = (page: number, size: number) =>
+  CommonUtils.range((page - 1) * size + 1, page * size).map(index => {
+    const student: Student = {
+      studyentKey: index,
+      studyentId: CommonUtils.generateRandomId(),
+      name: `student${index}`,
+      address: `address-${index}`,
+      description: `description-${index}`,
+      createdDate: '2022-07-11',
+      birthDate: '1996-01-03',
+      age: 27,
+      gender: {
+        value: 'FEMALE',
+        label: '여성',
+      },
+      sequenceNo: index,
+    };
+    return student;
+  });
 
-mock.onGet('/api/v1/students').reply(() => [
-  200,
-  {
-    ...baseResponse,
-    result: students,
-  },
-]);
+mock.onGet(/\/api\/v1\/students\/\d+\/\d+$/).reply(req => {
+  const { page, size } = req.params;
+  console.log(1, students(page, size));
+  return [
+    200,
+    {
+      ...baseResponse,
+      result: {
+        contents: students(page, size),
+        totalPages: 10,
+        totalCount: 93,
+        isFirst: page === 1,
+        isLast: page === 10,
+        page,
+        size,
+        isEmpty: false,
+        isFiltered: false,
+        filteredElements: {},
+      },
+    },
+  ];
+});
