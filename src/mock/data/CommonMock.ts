@@ -35,7 +35,6 @@ const students = (page: number, size: number) =>
 
 mock.onGet(/\/api\/v1\/students\/\d+\/\d+$/).reply(req => {
   const { page, size } = req.params;
-  console.log(1, students(page, size));
   return [
     200,
     {
