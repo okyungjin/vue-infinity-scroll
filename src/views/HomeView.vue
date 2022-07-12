@@ -7,6 +7,7 @@
         <div class="student__name">{{ student.name }}</div>
       </div>
     </template>
+    <button @click="loadMore">Load</button>
   </div>
 </template>
 
@@ -22,12 +23,20 @@ export default defineComponent({
       page: 1,
       size: 10,
     };
+    const retrievedStudents = ref<Student[]>([]);
 
     const { result } = await CommonApi.retrieveStudents(paginationRequest);
-    const retrievedStudents = ref<Student[]>(result.contents);
+    retrievedStudents.value = result.contents;
+
+    const loadMore = async () => {
+      paginationRequest.page += 1;
+      const { result } = await CommonApi.retrieveStudents(paginationRequest);
+      retrievedStudents.value.push(...result.contents);
+    };
 
     return {
       retrievedStudents,
+      loadMore,
     };
   },
   emits: [],
