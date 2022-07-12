@@ -7,6 +7,14 @@
         <div class="student__name">{{ student.name }}</div>
       </div>
     </template>
+
+    <div class="loading">
+      <template v-if="isLoadingVisible">
+        <span>Loading...</span>
+      </template>
+    </div>
+
+    <div class="load-btn">
     <button @click="loadMore">Load</button>
   </div>
 </template>
@@ -24,18 +32,24 @@ export default defineComponent({
       size: 10,
     };
     const retrievedStudents = ref<Student[]>([]);
+    const isLoadingVisible = ref(false);
 
     const { result } = await CommonApi.retrieveStudents(paginationRequest);
     retrievedStudents.value = result.contents;
 
     const loadMore = async () => {
+      isLoadingVisible.value = true;
+
       paginationRequest.page += 1;
       const { result } = await CommonApi.retrieveStudents(paginationRequest);
       retrievedStudents.value.push(...result.contents);
+
+      isLoadingVisible.value = false;
     };
 
     return {
       retrievedStudents,
+      isLoadingVisible,
       loadMore,
     };
   },
@@ -61,4 +75,12 @@ h1 {
   height: 80px;
   background-color: cornsilk;
 }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  height: 50px;
+}
+
 </style>
