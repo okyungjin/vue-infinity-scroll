@@ -15,7 +15,8 @@
     </div>
 
     <div class="load-btn">
-    <button @click="loadMore">Load</button>
+      <button @click="loadMore">Load</button>
+    </div>
   </div>
 </template>
 
@@ -83,4 +84,8 @@ h1 {
   height: 50px;
 }
 
+.load-btn {
+  display: flex;
+  justify-content: center;
+}
 </style>
