@@ -14,9 +14,7 @@
       </template>
     </div>
 
-    <div class="load-btn">
-      <button @click="loadMore">Load</button>
-    </div>
+    <div v-if="isLastPage">All Data is loaded.</div>
   </div>
 </template>
 
@@ -34,23 +32,37 @@ export default defineComponent({
     };
     const retrievedStudents = ref<Student[]>([]);
     const isLoadingVisible = ref(false);
+    const isLastPage = ref(false);
 
     const { result } = await CommonApi.retrieveStudents(paginationRequest);
     retrievedStudents.value = result.contents;
 
     const loadMore = async () => {
+      if (isLastPage.value) return;
+
       isLoadingVisible.value = true;
 
       paginationRequest.page += 1;
       const { result } = await CommonApi.retrieveStudents(paginationRequest);
+      console.log(result);
+
       retrievedStudents.value.push(...result.contents);
+      isLastPage.value = result.isLast;
 
       isLoadingVisible.value = false;
+    };
+
+    // prettier-ignore
+    window.onscroll = () => {
+      if (isLoadingVisible.value) return;
+      if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight)
+        loadMore();
     };
 
     return {
       retrievedStudents,
       isLoadingVisible,
+      isLastPage,
       loadMore,
     };
   },
